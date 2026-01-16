@@ -3,7 +3,7 @@
   "packageManager": "yarn@4.12.0",
   "type": "module",
   "scripts": {
-    "get-jira": "tsx src/main.ts"
+    "get-jira": "tsx --env-file=.env src/main.ts"
   },
   "devDependencies": {
     "@dgvalerio/eslint-config": "^2.0.1",
@@ -23,8 +23,10 @@
     "typescript-eslint": "^8.53.0"
   },
   "dependencies": {
+    "@t3-oss/env-core": "^0.13.10",
     "axios": "^1.13.2",
     "tsx": "^4.21.0",
-    "typescript": "^5.9.3"
+    "typescript": "^5.9.3",
+    "zod": "^4.3.5"
   }
 }
