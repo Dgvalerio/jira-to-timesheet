@@ -9,10 +9,10 @@ export default [
   {
     ignores: ['dist/', 'node_modules/', '.next/', 'next-env.d.ts'],
   },
-  // {
-  //   files: ['src/proxy.ts', 'src/translations/messages/**/index.ts'],
-  //   rules: { 'no-restricted-syntax': 'off' },
-  // },
+  {
+    files: ['src/backup/*', 'src/to-send/*'],
+    rules: { 'no-restricted-syntax': 'off' },
+  },
   {
     files: ['**/*.mjs'],
     rules: {
@@ -56,6 +56,7 @@ export default [
   },
   {
     rules: {
+      'no-console': 'off',
       '@typescript-eslint/array-type': ['error', { default: 'array' }],
       '@typescript-eslint/consistent-type-imports': [
         'warn',

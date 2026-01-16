@@ -18,3 +18,7 @@ node_modules
 
 #!.yarn/cache
 .pnp.*
+
+# Generated
+src/backup/*
+src/to-send/*
