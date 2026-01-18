@@ -7,10 +7,10 @@ import { loadTimesheetClients } from '@/send-to-timesheet/load-clients';
 import { loadTimesheetCookies } from '@/send-to-timesheet/load-cookies';
 import { saveClients } from '@/send-to-timesheet/save-clients';
 import { eslintFixFiles } from '@/utils/eslint-fix-files';
-import { generateJiraToTimesheetMap } from '@/utils/generate-jira-to-timesheet-map';
+import { updateJiraToTimesheetMap } from '@/utils/update-jira-to-timesheet-map';
 
 const START_DATE = '2026-01-01';
-const END_DATE = '2026-01-31';
+const END_DATE = '2026-01-02';
 
 const main = async (): Promise<void> => {
   console.log(`Conectando ao JIRA: ${env.JIRA_DOMAIN}\n`);
@@ -36,11 +36,17 @@ const main = async (): Promise<void> => {
 
     const clients = await loadTimesheetClients(cookies);
 
+    console.log('Salvando clientes...');
+
     await saveClients(clients);
 
-    await generateJiraToTimesheetMap();
+    console.log('Gerando map de Jira para Timesheet...');
+
+    await updateJiraToTimesheetMap();
 
     await eslintFixFiles(['src/generated']);
+
+    console.log('Executando Cypress...');
   } catch (error: any) {
     console.error('\nErro:', error.message);
     process.exit(1);

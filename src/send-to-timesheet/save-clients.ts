@@ -21,10 +21,8 @@ type ClientsObject = Record<
   TimesheetClient & { projects: ProjectsObject }
 >;
 
-export const saveClients = async (
-  clientsList: TimesheetClient[]
-): Promise<void> => {
-  const clientsObject = clientsList.reduce((clients, client) => {
+const parseListToObject = (clientsList: TimesheetClient[]): ClientsObject => {
+  return clientsList.reduce((clients, client) => {
     return Object.assign(clients, {
       [`${client.title} (ID: ${client.id})`]: Object.assign(client, {
         projects: client.projects.reduce((projects, project) => {
@@ -41,13 +39,17 @@ export const saveClients = async (
       }),
     });
   }, {} as ClientsObject);
+};
 
+export const saveClients = async (
+  clientsList: TimesheetClient[]
+): Promise<void> => {
   const content = `
 import type { AppointmentReference } from '@/send-to-timesheet/types';
 
 export const clientsList = ${JSON.stringify(clientsList, null, 2)} as const;
 
-export const clientsObject = ${JSON.stringify(clientsObject, null, 2)} as const;
+export const clientsObject = ${JSON.stringify(parseListToObject(clientsList), null, 2)} as const;
 
 type Clients = typeof clientsObject;
 
@@ -91,9 +93,21 @@ export const mountProject = <
   project: Project,
   category: Category
 ): AppointmentReference => {
+  const empty = { client: '', project: '', category: '' };
+
+  if (!client || !project || !category) return empty;
+
   const clientData = (clientsObject as GenericObject)[client];
+
+  if (!clientData) return empty;
+
   const projectData = clientData.projects[project as string];
+
+  if (!projectData) return empty;
+
   const categoryData = projectData.categories[category as string];
+
+  if (!categoryData) return empty;
 
   return {
     client: String(clientData.id),
