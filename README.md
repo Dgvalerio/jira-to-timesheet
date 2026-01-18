@@ -91,3 +91,7 @@ Finally, run the send script to upload your appointments to the Timesheet.
 ```bash
 yarn send
 ```
+
+## Contributing
+
+Feel free to contribute! If you want to request changes or add features, please open an [issue](https://github.com/Dgvalerio/jira-to-timesheet/issues) or submit a Pull Request.
