@@ -6,14 +6,13 @@ import { env } from '@/lib/@t3-oss/env';
 import { loadTimesheetClients } from '@/send-to-timesheet/load-clients';
 import { loadTimesheetCookies } from '@/send-to-timesheet/load-cookies';
 import { saveClients } from '@/send-to-timesheet/save-clients';
-import { sendWithAPI } from '@/send-to-timesheet/send-with-api';
 import { eslintFixFiles } from '@/utils/eslint-fix-files';
 import { updateJiraToTimesheetMap } from '@/utils/update-jira-to-timesheet-map';
 
-const START_DATE = '2026-01-01';
-const END_DATE = '2026-01-02';
+const START_DATE = '2026-01-03';
+const END_DATE = '2026-01-05';
 
-const main = async (): Promise<void> => {
+const getData = async (): Promise<void> => {
   console.log(`Conectando ao JIRA: ${env.JIRA_DOMAIN}\n`);
 
   try {
@@ -46,12 +45,10 @@ const main = async (): Promise<void> => {
     await updateJiraToTimesheetMap();
 
     await eslintFixFiles(['src/generated']);
-
-    await sendWithAPI();
   } catch (error: any) {
     console.error('\nErro:', error.message);
     process.exit(1);
   }
 };
 
-void main();
+void getData();

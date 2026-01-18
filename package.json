@@ -3,7 +3,8 @@
   "packageManager": "yarn@4.12.0",
   "type": "module",
   "scripts": {
-    "get-jira": "tsx --env-file=.env src/main.ts"
+    "get": "tsx --env-file=.env src/get-data.ts",
+    "send": "tsx --env-file=.env src/send-data.ts"
   },
   "devDependencies": {
     "@dgvalerio/eslint-config": "^2.0.1",
