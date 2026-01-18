@@ -9,6 +9,7 @@ import { saveClients } from '@/send-to-timesheet/save-clients';
 import { eslintFixFiles } from '@/utils/eslint-fix-files';
 import { updateJiraToTimesheetMap } from '@/utils/update-jira-to-timesheet-map';
 
+// Preencha com o período de busca dos worklogs do JIRA.
 const START_DATE = '2026-01-03';
 const END_DATE = '2026-01-05';
 
