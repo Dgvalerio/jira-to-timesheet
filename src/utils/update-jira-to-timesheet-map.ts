@@ -58,37 +58,27 @@ export const JiraToTimesheetMap: Record<
     .map((key) => {
       const empty = `  ${key}: mountProject('', '', ''),`;
 
-      console.log(1);
       if (!mapper[key]) return empty;
-      console.log(2);
 
       const ref = mapper[key];
 
-      console.log(3, { ref });
       if (!ref.client || !ref.project || !ref.category) return empty;
-      console.log(4);
 
       const client = clientsList.find((item) => item.id === ref.client);
 
-      console.log(5, { client });
       if (!client) return empty;
-      console.log(6);
 
       const project = client.projects.find(
         (item) => String(item.Id) === ref.project
       );
 
-      console.log(7, { project });
       if (!project) return empty;
-      console.log(8);
 
       const category = project.categories.find(
         (item) => String(item.Id) === ref.category
       );
 
-      console.log(9, { category });
       if (!category) return empty;
-      console.log(0);
 
       return `  ${key}: mountProject('${client.title} (ID: ${client.id})', '${project.Name} (ID: ${[project.Id]})', '${category.Name} (ID: ${category.Id})'),`;
     })
