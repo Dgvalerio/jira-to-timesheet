@@ -95,3 +95,12 @@ yarn send
 ## Contributing
 
 Feel free to contribute! If you want to request changes or add features, please open an [issue](https://github.com/Dgvalerio/jira-to-timesheet/issues) or submit a Pull Request.
+
+## Support the Project
+
+This project is developed in my spare time and is available for free.
+If you found this useful and would like to support the development, consider making a donation via **PIX**.
+
+![PIX QR Code](./qrcode.png)
+
+> **Pix Key**: `3152b100-37c3-4d3c-86fa-1413bd6df020`
