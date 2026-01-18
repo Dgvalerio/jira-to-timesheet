@@ -10,7 +10,7 @@ export default [
     ignores: ['dist/', 'node_modules/', '.next/', 'next-env.d.ts'],
   },
   {
-    files: ['src/backup/*', 'src/to-send/*'],
+    files: ['src/backup/*', 'src/generated/*', 'cypress.config.ts'],
     rules: { 'no-restricted-syntax': 'off' },
   },
   {
@@ -44,11 +44,11 @@ export default [
 
   {
     ...pluginCypress.configs.globals,
-    files: ['cypress/**/*.ts'],
+    files: ['cypress/**/*.ts', '**/*.cy.ts'],
   },
   {
     ...pluginCypress.configs.recommended,
-    files: ['cypress/**/*.ts'],
+    files: ['cypress/**/*.ts', '**/*.cy.ts'],
   },
   {
     plugins: { import: pluginImport },

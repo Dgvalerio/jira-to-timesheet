@@ -17,7 +17,7 @@ export const createJiraClient = (config: JiraConfig): AxiosInstance => {
   );
 
   return axios.create({
-    baseURL: `https://${config.domain}/rest/api/3`,
+    baseURL: `${config.domain}/rest/api/3`,
     headers: {
       Authorization: `Basic ${authHeader}`,
       'Content-Type': 'application/json',

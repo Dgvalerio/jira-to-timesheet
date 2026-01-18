@@ -21,7 +21,7 @@ node_modules
 
 # Generated
 src/backup/*
-src/to-send/*
+src/generated/*
 
 # ENV
 .env

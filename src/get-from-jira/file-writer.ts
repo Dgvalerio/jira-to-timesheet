@@ -1,4 +1,5 @@
 import type { WorklogEntry } from '@/get-from-jira/types';
+import { eslintFixFiles } from '@/utils/eslint-fix-files';
 
 import { format } from 'date-fns';
 import { ptBR } from 'date-fns/locale';
@@ -26,10 +27,25 @@ export const buildFileContent = (entries: WorklogEntry[]): string => {
     })
     .join('\n');
 
-  return `const list = [\n${items},\n];\n\nexport default list;\n\n`;
+  const keysObject = entries.reduce(
+    (keys, worklog) => {
+      const [key] = worklog.issueKey.split('-');
+
+      return Object.assign(keys, { [key]: key });
+    },
+    {} as Record<string, string>
+  );
+
+  return `
+export const worklogs = [${items}] as const;
+
+export const worklogsKeys = ${JSON.stringify(Object.keys(keysObject), null, 2)} as const;
+`;
 };
 
-export const writeWorklogsToFile = (entries: WorklogEntry[]): void => {
+export const writeWorklogsToFile = async (
+  entries: WorklogEntry[]
+): Promise<void> => {
   // Escreve em backups separados por data
   const date = format(new Date(), "yyyy/MM' - 'MMMM/dd", { locale: ptBR });
 
@@ -48,7 +64,7 @@ export const writeWorklogsToFile = (entries: WorklogEntry[]): void => {
   console.log(`\n✅ Arquivo de backup criado: ${filename}`);
 
   // Sobrescreve o arquivo de worklogs a ser enviado
-  const finalOutputDir = `src/to-send`;
+  const finalOutputDir = `src/generated`;
 
   if (!existsSync(finalOutputDir)) {
     mkdirSync(finalOutputDir, { recursive: true });
@@ -58,6 +74,8 @@ export const writeWorklogsToFile = (entries: WorklogEntry[]): void => {
   const finalContent = buildFileContent(entries);
 
   writeFileSync(finalFilename, finalContent, 'utf-8');
+
+  await eslintFixFiles([filename]);
 
   console.log(`\n✅ Arquivo final criado: ${finalFilename}`);
 };

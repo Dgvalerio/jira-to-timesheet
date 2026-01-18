@@ -12,6 +12,8 @@ export const env = createEnv({
         1,
         'O token é obrigatório. Gere em https://id.atlassian.com/manage-profile/security/api-tokens'
       ),
+    TIMESHEET_LOGIN: z.email(),
+    TIMESHEET_PASSWORD: z.string().min(1),
     NODE_ENV: z
       .enum(['development', 'test', 'production'])
       .default('development'),

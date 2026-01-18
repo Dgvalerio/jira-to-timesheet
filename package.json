@@ -25,6 +25,9 @@
   "dependencies": {
     "@t3-oss/env-core": "^0.13.10",
     "axios": "^1.13.2",
+    "axios-cookiejar-support": "^6.0.5",
+    "cypress": "^15.9.0",
+    "tough-cookie": "^6.0.0",
     "tsx": "^4.21.0",
     "typescript": "^5.9.3",
     "zod": "^4.3.5"
