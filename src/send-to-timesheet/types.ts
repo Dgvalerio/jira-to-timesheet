@@ -1,10 +1,14 @@
-export interface Days {
+export interface Appointment {
+  // ID do cliente
   client: string;
+  // ID do projeto
   project: string;
+  // ID da categoria
   category: string;
   date: string;
   description: string;
-  time: { initial: string; final: string }[];
+  initialTime: string;
+  finalTime: string;
 }
 
 export interface AppointmentReference {

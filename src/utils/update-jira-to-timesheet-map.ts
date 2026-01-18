@@ -1,4 +1,4 @@
-import { clientsList } from '@/generated/clients';
+import { categoryMap, clientMap, projectMap } from '@/generated/clients';
 import { worklogsKeys } from '@/generated/worklogs';
 import type { AppointmentReference } from '@/send-to-timesheet/types';
 import { eslintFixFiles } from '@/utils/eslint-fix-files';
@@ -64,27 +64,22 @@ export const JiraToTimesheetMap: Record<
 
       if (!ref.client || !ref.project || !ref.category) return empty;
 
-      const client = clientsList.find((item) => item.id === ref.client);
+      const client = clientMap[ref.client as keyof typeof clientMap];
 
       if (!client) return empty;
 
-      const project = client.projects.find(
-        (item) => String(item.Id) === ref.project
-      );
+      const project = projectMap[ref.project as keyof typeof projectMap];
 
       if (!project) return empty;
 
-      const category = project.categories.find(
-        (item) => String(item.Id) === ref.category
-      );
+      const category = categoryMap[ref.category as keyof typeof categoryMap];
 
       if (!category) return empty;
 
-      return `  ${key}: mountProject('${client.title} (ID: ${client.id})', '${project.Name} (ID: ${[project.Id]})', '${category.Name} (ID: ${category.Id})'),`;
+      return `  ${key}: mountProject('${client} (ID: ${ref.client})', '${project} (ID: ${[ref.project]})', '${category} (ID: ${ref.category})'),`;
     })
     .join('\n')}
 } as const;
-
     `;
 
   writeFileSync(filename, content, 'utf-8');

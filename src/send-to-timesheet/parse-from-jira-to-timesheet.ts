@@ -1,18 +1,13 @@
 import { JiraToTimesheetMap } from '@/generated/jira-to-timesheet-map';
 import type {
   AppointmentReference,
-  Days,
+  Appointment,
   FromJIRA,
 } from '@/send-to-timesheet/types';
 
 import { format, parseISO } from 'date-fns';
 
-const t = (
-  initial: string,
-  final: string
-): { initial: string; final: string } => ({ initial, final });
-
-export const parseFromJiraToTimesheet = (jira: FromJIRA): Days => {
+export const parseFromJiraToTimesheet = (jira: FromJIRA): Appointment => {
   const key = jira.key.split('-')[0];
 
   if (!Object.hasOwn(JiraToTimesheetMap, key)) {
@@ -24,7 +19,8 @@ export const parseFromJiraToTimesheet = (jira: FromJIRA): Days => {
 
   return {
     date: format(parseISO(jira.date), 'dd/MM/yyyy'),
-    time: [t(jira.startTime, jira.endTime)],
+    initialTime: jira.startTime,
+    finalTime: jira.endTime,
     description:
       `Trabalhando em ${jira.key}: ${jira.summary}` +
       (jira.description === 'Sem descrição' ? '' : ` (${jira.description})`),

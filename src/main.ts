@@ -6,6 +6,7 @@ import { env } from '@/lib/@t3-oss/env';
 import { loadTimesheetClients } from '@/send-to-timesheet/load-clients';
 import { loadTimesheetCookies } from '@/send-to-timesheet/load-cookies';
 import { saveClients } from '@/send-to-timesheet/save-clients';
+import { sendWithAPI } from '@/send-to-timesheet/send-with-api';
 import { eslintFixFiles } from '@/utils/eslint-fix-files';
 import { updateJiraToTimesheetMap } from '@/utils/update-jira-to-timesheet-map';
 
@@ -46,7 +47,7 @@ const main = async (): Promise<void> => {
 
     await eslintFixFiles(['src/generated']);
 
-    console.log('Executando Cypress...');
+    await sendWithAPI();
   } catch (error: any) {
     console.error('\nErro:', error.message);
     process.exit(1);

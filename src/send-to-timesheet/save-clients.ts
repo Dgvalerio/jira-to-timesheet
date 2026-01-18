@@ -3,7 +3,6 @@ import type {
   TimesheetClient,
   TimesheetProject,
 } from '@/send-to-timesheet/types';
-import { eslintFixFiles } from '@/utils/eslint-fix-files';
 
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
 import { join } from 'path';
@@ -41,11 +40,49 @@ const parseListToObject = (clientsList: TimesheetClient[]): ClientsObject => {
   }, {} as ClientsObject);
 };
 
+type ClientMap = Record<TimesheetClient['id'], TimesheetClient['title']>;
+type ProjectMap = Record<TimesheetProject['Id'], TimesheetProject['Name']>;
+type CategoryMap = Record<TimesheetCategory['Id'], TimesheetCategory['Name']>;
+
+const mountObjects = (
+  clientsList: TimesheetClient[]
+): {
+  clientMap: ClientMap;
+  projectMap: ProjectMap;
+  categoryMap: CategoryMap;
+} => {
+  let clientMap: ClientMap = {};
+  let projectMap: ProjectMap = {};
+  let categoryMap: CategoryMap = {};
+
+  clientsList.forEach((client) => {
+    clientMap = { ...clientMap, [`${client.id}`]: client.title };
+
+    client.projects.forEach((project) => {
+      projectMap = { ...projectMap, [`${project.Id}`]: project.Name };
+
+      project.categories.forEach((category) => {
+        categoryMap = { ...categoryMap, [`${category.Id}`]: category.Name };
+      });
+    });
+  });
+
+  return { clientMap, projectMap, categoryMap };
+};
+
 export const saveClients = async (
   clientsList: TimesheetClient[]
 ): Promise<void> => {
+  const { clientMap, projectMap, categoryMap } = mountObjects(clientsList);
+
   const content = `
 import type { AppointmentReference } from '@/send-to-timesheet/types';
+
+export const clientMap = ${JSON.stringify(clientMap, null, 2)} as const;
+
+export const projectMap = ${JSON.stringify(projectMap, null, 2)} as const;
+
+export const categoryMap = ${JSON.stringify(categoryMap, null, 2)} as const;
 
 export const clientsList = ${JSON.stringify(clientsList, null, 2)} as const;
 
@@ -126,7 +163,4 @@ export const mountProject = <
   const filename = join(outputDir, `clients.ts`);
 
   writeFileSync(filename, content, 'utf-8');
-
-  await eslintFixFiles([filename]);
-  await eslintFixFiles([filename]);
 };
