@@ -1,15 +1,29 @@
-import { categoryMap, clientMap, projectMap } from '@/generated/clients';
-import { worklogsKeys } from '@/generated/worklogs';
 import type { AppointmentReference } from '@/send-to-timesheet/types';
 import { eslintFixFiles } from '@/utils/eslint-fix-files';
 
 import { existsSync, mkdirSync, writeFileSync } from 'fs';
-import fs from 'node:fs';
 import { pathToFileURL } from 'node:url';
-import { join } from 'path';
+import { join, resolve } from 'path';
 
 export const updateJiraToTimesheetMap = async (): Promise<void> => {
   const outputDir = `src/generated`;
+
+  const clientsPath = resolve(process.cwd(), 'src/generated/clients.ts');
+  const worklogsPath = resolve(process.cwd(), 'src/generated/worklogs.ts');
+
+  const clientsModule = await import(
+    `${pathToFileURL(clientsPath).href}?v=${Date.now()}`
+  );
+  const worklogsModule = await import(
+    `${pathToFileURL(worklogsPath).href}?v=${Date.now()}`
+  );
+
+  const { categoryMap, clientMap, projectMap } = clientsModule as {
+    categoryMap: Record<string, string>;
+    clientMap: Record<string, string>;
+    projectMap: Record<string, string>;
+  };
+  const { worklogsKeys } = worklogsModule as { worklogsKeys: string[] };
 
   if (!existsSync(outputDir)) {
     mkdirSync(outputDir, { recursive: true });
@@ -19,7 +33,7 @@ export const updateJiraToTimesheetMap = async (): Promise<void> => {
 
   let mapper: Record<string, AppointmentReference> = {};
 
-  if (fs.existsSync(filename)) {
+  if (existsSync(filename)) {
     try {
       const fileUrl = `${pathToFileURL(filename).href}?update=${Date.now()}`;
 
@@ -76,7 +90,7 @@ export const JiraToTimesheetMap: Record<
 
       if (!category) return empty;
 
-      return `  ${key}: mountProject('${client} (ID: ${ref.client})', '${project} (ID: ${[ref.project]})', '${category} (ID: ${ref.category})'),`;
+      return `  ${key}: mountProject('${client} (ID: ${ref.client})', '${project} (ID: ${ref.project})', '${category} (ID: ${ref.category})'),`;
     })
     .join('\n')}
 } as const;
