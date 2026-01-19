@@ -30,10 +30,10 @@ export const sendAppointments = async (
   | { success: true; data: any }
   | { success: false; errors: any }
 > => {
-  // 1. Converter SerializedCookie[] para string de cabeçalho 'Cookie'
-  const cookieHeader = cookies.map((c) => `${c.key}=${c.value}`).join('; ');
+  const cookieHeader = cookies
+    .map((cookie) => `${cookie.key}=${cookie.value}`)
+    .join('; ');
 
-  // 2. Transformar seu Appointment[] no formato WorksheetMultiple do backend
   const payload = {
     WorksheetMultiple: appointments.map((appointment) => ({
       IdCustomer: appointment.client,
@@ -46,7 +46,6 @@ export const sendAppointments = async (
       InformedDate: appointment.date,
       StartTime: appointment.initialTime,
       EndTime: appointment.finalTime,
-      // Envolvemos em <p> para simular o Summernote e evitar problemas de formatação
       Description: `<p>${appointment.description}</p>`,
       NotMonetize: false,
     })),
@@ -60,26 +59,17 @@ export const sendAppointments = async (
         headers: {
           'Content-Type': 'application/json',
           Cookie: cookieHeader,
-          // MVC geralmente espera o token neste header para chamadas AJAX
           RequestVerificationToken: verificationToken,
         },
       }
     );
 
-    // O backend retorna 200 mesmo com erro de negócio (ex: validação)
-    // Precisamos checar a flag .success
     if (response.data?.success) {
       console.log('✅ Sucesso! Apontamentos criados.');
 
       return { success: true, data: response.data };
     } else {
-      console.warn(
-        '⚠️ Request aceito, mas backend recusou:',
-        response.data?.message
-      );
-      if (response.data?.messageFailed) {
-        console.table(response.data.messageFailed);
-      }
+      console.warn('⚠️ Request aceito, mas backend recusou:', response.data);
 
       return { success: false, errors: response.data };
     }
